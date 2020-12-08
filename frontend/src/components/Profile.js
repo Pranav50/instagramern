@@ -90,6 +90,7 @@ const Profile = () => {
                 <div>
                     <h4> {state?state.name:'loading'} </h4>
                     <h4> {state?state.email:'loading'} </h4>
+                    <h3> {state.name === 'Pranav' && state.email === 'pranav@gmail.com' ? 'Developer of this Clone' : ''} </h3>
 
                     <div className="post-size">
                         <div className="profile-details-size"><h5> {myPics.length} </h5><span>posts</span></div>

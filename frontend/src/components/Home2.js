@@ -3,9 +3,9 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import {Modal, Button, Table} from 'react-bootstrap'
 import '../App.css'
-import './Home.css'
 import { UserContext } from '../App';
 import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const Home = () => {
     const [data, setData] = useState([])
@@ -16,8 +16,6 @@ const Home = () => {
     const [showfollow,setShowFollow] = useState(true)
     const [newText, setNewText] = useState([])
     const [newText2, setNewText2] = useState([])
-
-    const [disabled, setDisabled] = useState(true)
     
     const [counter, setCounter] = React.useState(0);
 
@@ -308,29 +306,86 @@ const unfollowUser = (id)=>{
                                         }
 
                                         {
+
+                                    // <form onSubmit={(e) => {e.preventDefault(); 
+                                    // makeComment(e.target[0].value, item._id)}}>
+                                    //     <input type="text" onChange={onChange} />
+                                    //     <input type="submit" value="Post" />
+                                    // </form>
+
                                     <>
-                                    <hr/>
                                     <form
-                                        onSubmit={(e) => {
-                                        e.preventDefault();
-                                        makeComment(e.target[0].value, item._id);
-                                        }}
-                                    >
-                                        <input
-                                            type="text"
-                                            value={newText[item._id] ? newText[item._id] : ""}
-                                            onChange={(e) => {
-                                            onChange(e, item._id);
-                                        }}
-                                        placeholder="Add a comment..."
-                                        />
-                                        <button className="button-post" type="submit" disabled={!newText[item._id]} 
-                                        >
-                                            Post
-                                        </button>
-                                    </form>
+        onSubmit={(e) => {
+          e.preventDefault();
+          makeComment(e.target[0].value, item._id);
+        }}
+      >
+        <input
+          type="text"
+          value={newText[item._id] ? newText[item._id] : ""}
+          onChange={(e) => {
+            onChange(e, item._id);
+          }}
+          placeholder="add a comment"
+        />
+        <button type="submit" disabled={!newText[item._id]}>
+          Post
+        </button>
+      </form>
+                                    {/* {
+                                        console.log(newText, newText[item._id])
+                                    } */}
                                     </>
+
+                                            // <form onSubmit={(e) => {e.preventDefault();
+                                            //     makeComment(e.target[0].value, item._id)}}>
+                                            // <input type="text"  placeholder="add a comment" /> 
+                                            // </form>
                                         }
+
+                                        {
+                                            // <form onSubmit={(e) => {
+                                            //     e.preventDefault();
+                                            //     makeComment(e.target[0].value, item._id)
+                                            //     setNewText("")
+                                            // }}>
+                                            //     { 
+                                            //         <>
+                                            //         <input type="text" value={state._id ? newText : newText2} 
+                                            //         onChange={onChange} placeholder="add a comment" />
+                                            //         <button type="submit" disabled={state._id ? !newText : !newText2}>Post</button>
+                                            //         </>
+                                            //     }
+                                                    
+                                                
+                                            //     <input type="text" value={newText[index]} 
+                                            //     onChange={(e) => setNewText(replaceByIndex(newText, index, e.target.value))} placeholder="add a comment" />
+                                            //     <button type="submit" disabled={!newText}>Post</button>
+                                            // </form>
+                                        } 
+                                        
+                                        {/* <form onSubmit={(e) => {
+                                            e.preventDefault()
+
+                                                makeComment(e.target[0].value, item._id)
+                                                   
+                                        }}>
+                                                <input
+                                                    type="text"
+                                                    value={text}
+                                                    placeholder="add a comment"
+                                                    
+                                                />
+                                                <button type="submit" disabled={!text}>Post</button>
+                                        </form> */}
+                                        
+                                        {/* <form onSubmit={(e) => {
+                                            e.preventDefault();
+                                            makeComment(e.target[0].value, item._id)
+                                        }}>
+                                            <input type="text" value={newtext} onChange={onChange} placeholder="add a comment" />
+                                            <button type="submit" disabled={!newtext}>Post</button>
+                                        </form> */}
                                          
                                     </div>
                         </div>
@@ -341,4 +396,4 @@ const unfollowUser = (id)=>{
     );
 };
 
-export default Home
+export default Home;

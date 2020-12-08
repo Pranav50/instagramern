@@ -3,9 +3,9 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import {Modal, Button, Table} from 'react-bootstrap'
 import '../App.css'
-import './Home.css'
 import { UserContext } from '../App';
 import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const Home = () => {
     const [data, setData] = useState([])
@@ -17,17 +17,12 @@ const Home = () => {
     const [newText, setNewText] = useState([])
     const [newText2, setNewText2] = useState([])
 
-    const [disabled, setDisabled] = useState(true)
+    const replaceByIndex = (originArray, index, newItem) => 
+    {
+        originArray.map((item, i) => i === index ? newItem: item)
+    }
     
-    const [counter, setCounter] = React.useState(0);
-
-    const onChange = (e, id) => {
-    const value = e.target.value;
-    const changedText = newText;
-    changedText[id] = value;
-    setNewText(changedText);
-    setCounter(counter + 1);
-  };
+    // 
 
     const likePost = (id)=>{
         fetch('/like',{
@@ -92,36 +87,33 @@ const unlikePost = (id)=>{
     }, [])
 
 
-const makeComment = (text, postId) => {
-        onChange({ target: { value: "" } }, postId);
-
-        fetch("/comment", {
-          method: "put",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("jwt")
-          },
-          body: JSON.stringify({
-            postId,
-            text
-          })
-        })
-          .then((res) => res.json())
-          .then((result) => {
-            console.log(result);
-            const newData = data.map((item) => {
-              if (item._id === result._id) {
-                return { ...item, comments: result.comments };
-              } else {
-                return item;
+const makeComment = (text,postId)=>{
+        fetch('/comment',{
+            method:"put",
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization":"Bearer "+localStorage.getItem("jwt")
+            },
+            body:JSON.stringify({
+                postId,
+                text
+            })
+        }).then(res=>res.json())
+        .then(result=>{
+            console.log(result)
+            const newData = data.map(item=>{
+              if(item._id==result._id){
+                  return {...item,comments: result.comments}
+              }else{
+                  return item
               }
-            });
-            setData(newData);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-};
+           })
+          setData(newData)
+        }).catch(err=>{
+            console.log(err)
+        })
+
+  }
 
 const deletePost = (postid) => {
       fetch(`/deletepost/${postid}`, {
@@ -218,6 +210,20 @@ const unfollowUser = (id)=>{
     })
 }
 
+const onChange = e => {
+    const { value } = e.target;
+    setNewText(value);
+  };
+
+//   const onSubmit = e => {
+//     e.preventDefault();
+//     setText("");
+//   };
+
+const onHandleSubmit = (newestText) => {
+    console.log(newestText)
+}
+
     return (
             <div className="home" >
             {
@@ -308,29 +314,74 @@ const unfollowUser = (id)=>{
                                         }
 
                                         {
+
+                                    // <form onSubmit={(e) => {e.preventDefault(); 
+                                    // makeComment(e.target[0].value, item._id)}}>
+                                    //     <input type="text" onChange={onChange} />
+                                    //     <input type="submit" value="Post" />
+                                    // </form>
+
                                     <>
-                                    <hr/>
-                                    <form
-                                        onSubmit={(e) => {
-                                        e.preventDefault();
-                                        makeComment(e.target[0].value, item._id);
-                                        }}
-                                    >
-                                        <input
-                                            type="text"
-                                            value={newText[item._id] ? newText[item._id] : ""}
-                                            onChange={(e) => {
-                                            onChange(e, item._id);
-                                        }}
-                                        placeholder="Add a comment..."
-                                        />
-                                        <button className="button-post" type="submit" disabled={!newText[item._id]} 
-                                        >
-                                            Post
-                                        </button>
+                                    <form onSubmit={(e) => {e.preventDefault();
+                                    makeComment(e.target[0].value, item._id)}}>
+                                                    <input type="text" value={newText[item._id] ? newText[item._id] : ""} 
+                                                    onChange={onChange} placeholder="add a comment" />
+                                                    <button type="submit" disabled={!newText[item._id]}>Post</button>
                                     </form>
+                                    {/* {
+                                        console.log(newText, newText[item._id])
+                                    } */}
                                     </>
+
+                                            // <form onSubmit={(e) => {e.preventDefault();
+                                            //     makeComment(e.target[0].value, item._id)}}>
+                                            // <input type="text"  placeholder="add a comment" /> 
+                                            // </form>
                                         }
+
+                                        {
+                                            // <form onSubmit={(e) => {
+                                            //     e.preventDefault();
+                                            //     makeComment(e.target[0].value, item._id)
+                                            //     setNewText("")
+                                            // }}>
+                                            //     { 
+                                            //         <>
+                                            //         <input type="text" value={state._id ? newText : newText2} 
+                                            //         onChange={onChange} placeholder="add a comment" />
+                                            //         <button type="submit" disabled={state._id ? !newText : !newText2}>Post</button>
+                                            //         </>
+                                            //     }
+                                                    
+                                                
+                                            //     <input type="text" value={newText[index]} 
+                                            //     onChange={(e) => setNewText(replaceByIndex(newText, index, e.target.value))} placeholder="add a comment" />
+                                            //     <button type="submit" disabled={!newText}>Post</button>
+                                            // </form>
+                                        } 
+                                        
+                                        {/* <form onSubmit={(e) => {
+                                            e.preventDefault()
+
+                                                makeComment(e.target[0].value, item._id)
+                                                   
+                                        }}>
+                                                <input
+                                                    type="text"
+                                                    value={text}
+                                                    placeholder="add a comment"
+                                                    
+                                                />
+                                                <button type="submit" disabled={!text}>Post</button>
+                                        </form> */}
+                                        
+                                        {/* <form onSubmit={(e) => {
+                                            e.preventDefault();
+                                            makeComment(e.target[0].value, item._id)
+                                        }}>
+                                            <input type="text" value={newtext} onChange={onChange} placeholder="add a comment" />
+                                            <button type="submit" disabled={!newtext}>Post</button>
+                                        </form> */}
                                          
                                     </div>
                         </div>
@@ -341,4 +392,4 @@ const unfollowUser = (id)=>{
     );
 };
 
-export default Home
+export default Home;

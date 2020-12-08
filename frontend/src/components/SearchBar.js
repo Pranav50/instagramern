@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState,useRef,useEffect, useContext} from 'react';
 import search from '../img/search.png'
 import remove from '../img/remove.png'
 import {Table} from 'react-bootstrap'
@@ -12,6 +12,24 @@ const SearchBar = () => {
     const [userDetails, setUserDetails] = useState([])
     const [open, setOpen] = useState(true);
     const {state, dispatch} = useContext(UserContext)
+    const wrapperRef = useRef(null);
+    const [isVisible, setIsVisible] = useState(true);
+
+    useEffect(() => {
+        document.addEventListener("click", handleClickOutside, false);
+        return () => {
+          document.removeEventListener("click", handleClickOutside, false);
+        };
+      }, []);
+
+      const handleClickOutside = event => {
+        if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+            //alert('Clicked Outside')
+            setIsVisible(false);
+        } else {
+            setIsVisible(true);
+        }
+      };
 
     const fetchUsers = (query) => {
         setSearchUser(query)
@@ -50,7 +68,8 @@ const SearchBar = () => {
                 searchUser === '' ? '' : (
                     
                             userDetails.length === 0 ? '' : (
-                                <table className="square" style={{color:'black', zIndex:'999', marginTop:'16px',
+                                isVisible && <div ref={wrapperRef}>
+                                    <table className="square" style={{color:'black', zIndex:'999', marginTop:'16px',
                                 position:'absolute', maxHeight:'362px', backgroundColor:'white'}}>
                                             <tbody>
                                             {
@@ -69,7 +88,8 @@ const SearchBar = () => {
                                                 })
                                             }
                                             </tbody>
-                                            </table>
+                                    </table>
+                                </div>
                                 
                             )
 
